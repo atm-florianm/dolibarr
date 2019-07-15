@@ -482,7 +482,7 @@ if ($id > 0 || ! empty($ref)) {
 			if ($num) {
 				while ( $i < $num ) {
 					$objd = $db->fetch_object($resql);
-					$products_dispatched[$objd->rowid] = price2num($objd->qty, 5);
+					$products_dispatched[$objd->fk_product] = price2num($objd->qty, 5);
 					$i++;
 				}
 			}
@@ -491,11 +491,35 @@ if ($id > 0 || ! empty($ref)) {
 
 		$sql = "SELECT l.rowid, l.fk_product, l.subprice, l.remise_percent, l.ref AS sref, SUM(l.qty) as qty,";
 		$sql .= " p.ref, p.label, p.tobatch, p.fk_default_warehouse";
+
+        // Enable hooks to alter the SQL query (SELECT)
+        $parameters = array();
+        $reshook = $hookmanager->executeHooks(
+            'printFieldListSelect',
+            $parameters,
+            $object,
+            $action
+        );
+        if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
+        $sql .= $hookmanager->resPrint;
+
 		$sql .= " FROM " . MAIN_DB_PREFIX . "commande_fournisseurdet as l";
 		$sql .= " LEFT JOIN " . MAIN_DB_PREFIX . "product as p ON l.fk_product=p.rowid";
 		$sql .= " WHERE l.fk_commande = " . $object->id;
 		if (empty($conf->global->STOCK_SUPPORTS_SERVICES))
 			$sql .= " AND l.product_type = 0";
+
+        // Enable hooks to alter the SQL query (WHERE)
+        $parameters = array();
+        $reshook = $hookmanager->executeHooks(
+            'printFieldListWhere',
+            $parameters,
+            $object,
+            $action
+        );
+        if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
+        $sql .= $hookmanager->resPrint;
+
 		$sql .= " GROUP BY p.ref, p.label, p.tobatch, l.rowid, l.fk_product, l.subprice, l.remise_percent, p.fk_default_warehouse"; // Calculation of amount dispatched is done per fk_product so we must group by fk_product
 		$sql .= " ORDER BY p.ref, p.label";
 
@@ -526,6 +550,18 @@ if ($id > 0 || ! empty($ref)) {
 				print '<td align="right">' . $langs->trans("QtyToDispatchShort") . '</td>';
 				print '<td width="32"></td>';
 				print '<td align="right">' . $langs->trans("Warehouse") . '</td>';
+
+                // Enable hooks to append additional columns
+                $parameters = array();
+                $reshook = $hookmanager->executeHooks(
+                    'printFieldListTitle',
+                    $parameters,
+                    $object,
+                    $action
+                );
+                if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
+                print $hookmanager->resPrint;
+
 				print "</tr>\n";
 			}
 
@@ -540,7 +576,7 @@ if ($id > 0 || ! empty($ref)) {
 				if (! $objp->fk_product > 0) {
 					$nbfreeproduct++;
 				} else {
-					$remaintodispatch = price2num($objp->qty - (( float ) $products_dispatched[$objp->rowid]), 5); // Calculation of dispatched
+					$remaintodispatch = price2num($objp->qty - (( float ) $products_dispatched[$objp->fk_product]), 5); // Calculation of dispatched
 					if ($remaintodispatch < 0)
 						$remaintodispatch = 0;
 
@@ -556,7 +592,7 @@ if ($id > 0 || ! empty($ref)) {
 						print '<!-- Line to dispatch ' . $suffix . ' -->' . "\n";
 						// hidden fields for js function
 						print '<input id="qty_ordered' . $suffix . '" type="hidden" value="' . $objp->qty . '">';
-						print '<input id="qty_dispatched' . $suffix . '" type="hidden" value="' . ( float ) $products_dispatched[$objp->rowid] . '">';
+                        print '<input id="qty_dispatched' . $suffix . '" type="hidden" value="' . ( float ) $products_dispatched[$objp->fk_product] . '">';
 						print '<tr class="oddeven">';
 
 						$linktoprod = '<a href="' . DOL_URL_ROOT . '/product/fournisseurs.php?id=' . $objp->fk_product . '">' . img_object($langs->trans("ShowProduct"), 'product') . ' ' . $objp->ref . '</a>';
@@ -598,7 +634,7 @@ if ($id > 0 || ! empty($ref)) {
 						print '<td align="right">' . $objp->qty . '</td>';
 
 						// Already dispatched
-						print '<td align="right">' . $products_dispatched[$objp->rowid] . '</td>';
+						print '<td align="right">' . (float) $products_dispatched[$objp->fk_product] . '</td>';
 
 						if (! empty($conf->productbatch->enabled) && $objp->tobatch == 1) {
 							$type = 'batch';
@@ -608,6 +644,23 @@ if ($id > 0 || ! empty($ref)) {
 							//print img_picto($langs->trans('AddDispatchBatchLine'), 'split.png', 'onClick="addDispatchLine(' . $i . ',\'' . $type . '\')"');
 							print '</td>';     // Dispatch column
 							print '<td></td>'; // Warehouse column
+
+                            // Enable hooks to append additional columns
+                            $parameters = array(
+                                'is_information_row' => true, // allows hook to distinguish between the
+                                                              // rows with information and the rows with
+                                                              // dispatch form input
+                                'objp' => $objp
+                            );
+                            $reshook = $hookmanager->executeHooks(
+                                'printFieldListValue',
+                                $parameters,
+                                $object,
+                                $action
+                            );
+                            if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
+                            print $hookmanager->resPrint;
+
 							print '</tr>';
 
 							print '<tr class="oddeven" name="' . $type . $suffix . '">';
@@ -648,6 +701,23 @@ if ($id > 0 || ! empty($ref)) {
 							//print img_picto($langs->trans('AddStockLocationLine'), 'split.png', 'onClick="addDispatchLine(' . $i . ',\'' . $type . '\')"');
 							print '</td>';      // Dispatch column
 							print '<td></td>'; // Warehouse column
+
+                            // Enable hooks to append additional columns
+                            $parameters = array(
+                                'is_information_row' => true, // allows hook to distinguish between the
+                                                              // rows with information and the rows with
+                                                              // dispatch form input
+                                'objp' => $objp
+                            );
+                            $reshook = $hookmanager->executeHooks(
+                                'printFieldListValue',
+                                $parameters,
+                                $object,
+                                $action
+                            );
+                            if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
+                            print $hookmanager->resPrint;
+
 							print '</tr>';
 
 							print '<tr class="oddeven" name="' . $type . $suffix . '">';
@@ -698,6 +768,19 @@ if ($id > 0 || ! empty($ref)) {
 							print $langs->trans("ErrorNoWarehouseDefined");
 						}
 						print "</td>\n";
+
+                        // Enable hooks to append additional columns
+                        $parameters = array(
+                            'is_information_row' => false // this is a dispatch form row
+                        );
+                        $reshook = $hookmanager->executeHooks(
+                            'printFieldListValue',
+                            $parameters,
+                            $object,
+                            $action
+                        );
+                        if ($reshook < 0) setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
+                        print $hookmanager->resPrint;
 
 						print "</tr>\n";
 					}
