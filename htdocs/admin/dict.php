@@ -39,7 +39,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/accounting.lib.php';
-if (! empty($conf->accounting->enabled)) require_once DOL_DOCUMENT_ROOT . '/core/class/html.formaccounting.class.php';
+require_once DOL_DOCUMENT_ROOT.'/core/class/html.formaccounting.class.php';
 
 // Load translation files required by the page
 $langs->loadLangs(array("errors","admin","main","companies","resource","holiday","accountancy","hrm","orders","contracts","projects","propal","bills","interventions"));
@@ -1058,7 +1058,7 @@ if ($id)
             $valuetoshow=$langs->trans($valuetoshow);   // try to translate
             $class='';
 
-            if ($fieldlist[$field]=='pos')             { $valuetoshow=$langs->trans("Position"); $class='width100'; }
+            if ($fieldlist[$field]=='pos')             { $valuetoshow=$langs->trans("Position"); $class='maxwidth100'; }
             if ($fieldlist[$field]=='source')          { $valuetoshow=$langs->trans("Contact"); }
             if ($fieldlist[$field]=='price')           { $valuetoshow=$langs->trans("PriceUHT"); }
             if ($fieldlist[$field]=='taux')            {
@@ -1076,7 +1076,7 @@ if ($id)
 				if ($tabname[$id] == MAIN_DB_PREFIX."c_paiement") $valuetoshow=$form->textwithtooltip($langs->trans("Type"), $langs->trans("TypePaymentDesc"), 2, 1, img_help(1, ''));
 				else $valuetoshow=$langs->trans("Type");
             }
-            if ($fieldlist[$field]=='code')            { $valuetoshow=$langs->trans("Code"); $class='width100'; }
+            if ($fieldlist[$field]=='code')            { $valuetoshow=$langs->trans("Code"); $class='maxwidth100'; }
             if ($fieldlist[$field]=='libelle' || $fieldlist[$field]=='label')
             {
             	$valuetoshow=$form->textwithtooltip($langs->trans("Label"), $langs->trans("LabelUsedByDefault"), 2, 1, img_help(1, ''));
@@ -1602,7 +1602,6 @@ if ($id)
                             $class='tddict';
                             if ($fieldlist[$field] == 'note' && $id == 10) $class.=' tdoverflowmax200';
                             if ($fieldlist[$field] == 'tracking') $class.=' tdoverflowauto';
-                            if ($fieldlist[$field] == 'code') $class.=' width100';
                             if ($fieldlist[$field] == 'position') $class.=' right';
                             if ($fieldlist[$field] == 'localtax1_type') $class.=' nowrap';
                             if ($fieldlist[$field] == 'localtax2_type') $class.=' nowrap';
@@ -1780,11 +1779,10 @@ function fieldList($fieldlist, $obj = '', $tabname = '', $context = '')
 	global $form;
 	global $region_id;
 	global $elementList,$sourceList,$localtax_typeList;
-	global $bc;
 
 	$formadmin = new FormAdmin($db);
 	$formcompany = new FormCompany($db);
-	if (! empty($conf->accounting->enabled)) $formaccounting = new FormAccounting($db);
+	$formaccounting = new FormAccounting($db);
 
 	$withentity='';
 
@@ -1892,6 +1890,7 @@ function fieldList($fieldlist, $obj = '', $tabname = '', $context = '')
 		elseif (in_array($fieldlist[$field], array('libelle_facture'))) {
 		    print '<td>';
 		    $transfound=0;
+		    $transkey='';
 	        // Special case for labels
 	        if ($tabname == MAIN_DB_PREFIX.'c_payment_term')
 	        {
@@ -1981,7 +1980,7 @@ function fieldList($fieldlist, $obj = '', $tabname = '', $context = '')
             }
 
 			$classtd=''; $class='';
-			if ($fieldlist[$field]=='code') $classtd='width100';
+			if ($fieldlist[$field]=='code') $class='maxwidth100';
 			if (in_array($fieldlist[$field], array('pos', 'use_default', 'affect', 'delay', 'position', 'sortorder', 'sens', 'category_type'))) $class='maxwidth50';
 			if (in_array($fieldlist[$field], array('libelle', 'label', 'tracking'))) $class='quatrevingtpercent';
 			print '<td class="'.$classtd.'">';
