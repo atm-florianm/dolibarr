@@ -145,6 +145,11 @@ print '<td class="liste_titre">';
 print $langs->trans("DatabaseName").' : <b>'.$dolibarr_main_db_name.'</b><br>';
 print '</td>';
 print '</tr>';
+// warn about low disk space (we arbitrarily consider 1 GB to be the warning threshold)
+$available_space = disk_free_space($conf->admin->dir_output.'/backup') / pow(1024, 3);
+$disk_space_class = '';
+if ($available_space < 1) { $disk_space_class = 'error'; }
+echo '<tr><td class="'.$disk_space_class.'">'.$langs->trans('BackupAvailableDiskSpace', $available_space).'</td></tr>';
 print '<tr '.$bc[false].'><td style="padding-left: 8px">';
 ?>
 <table class="centpercent">
