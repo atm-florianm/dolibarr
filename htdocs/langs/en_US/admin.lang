@@ -1142,6 +1142,7 @@ BackupDesc2=Backup the contents of the "documents" directory (<b>%s</b>) contain
 BackupDesc3=Backup the structure and contents of your database (<b>%s</b>) into a dump file. For this, you can use the following assistant.
 BackupDescX=The archived directory should be stored in a secure place.
 BackupDescY=The generated dump file should be stored in a secure place.
+BackupAvailableDiskSpace=Available storage space for your backup: %.02fGB.
 BackupPHPWarning=Backup cannot be guaranteed with this method. Previous one recommended.
 RestoreDesc=To restore a Dolibarr backup, two steps are required.
 RestoreDesc2=Restore the backup file (zip file for example) of the "documents" directory to a new Dolibarr installation or into this current documents directory (<b>%s</b>).
