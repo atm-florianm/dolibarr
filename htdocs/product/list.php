@@ -902,7 +902,7 @@ if ($resql)
 			}
 			else
 			{
-				print $obj->duration;
+				print '<span class="duration-not-parsed">' . $obj->duration . '</span>';
 			}
 
 			print '</td>';
