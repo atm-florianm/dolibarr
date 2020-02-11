@@ -369,6 +369,12 @@ if (empty($reshook))
 								{
 									$error++;
 									break;
+								} else {
+									$contractLine = new ContratLigne($db);
+									$contractLine->fetch($result);
+									if (!$contractLine->add_object_linked($lines[$i]->element, $lines[$i]->id)) {
+										setEventMessages($contractLine->error, $contractLine->errors, 'errors');
+									}
 								}
 							}
 						}
