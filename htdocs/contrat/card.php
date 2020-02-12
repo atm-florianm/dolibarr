@@ -372,7 +372,7 @@ if (empty($reshook))
 								} else {
 									$contractLine = new ContratLigne($db);
 									$contractLine->fetch($result);
-									if (!$contractLine->add_object_linked($lines[$i]->element, $lines[$i]->id)) {
+									if (!$contractLine->add_object_linked('orderline', $lines[$i]->id)) {
 										setEventMessages($contractLine->error, $contractLine->errors, 'errors');
 									}
 								}
