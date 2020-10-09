@@ -97,7 +97,8 @@ class modProduct extends DolibarrModules
 		$this->boxes = array(
 			0=>array('file'=>'box_produits.php','enabledbydefaulton'=>'Home'),
 			1=>array('file'=>'box_produits_alerte_stock.php','enabledbydefaulton'=>''),
-			2=>array('file'=>'box_graph_product_distribution.php','enabledbydefaulton'=>'Home')
+			2=>array('file'=>'box_produits_alerte_peremption.php','enabledbydefaulton'=>'Home'),
+			3=>array('file'=>'box_graph_product_distribution.php','enabledbydefaulton'=>'')
 		);
 
 		// Permissions

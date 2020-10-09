@@ -52,6 +52,7 @@ $ref       = GETPOST('ref', 'alpha');
 $projectid = GETPOST('projectid', 'int');
 $cancel    = GETPOST('cancel', 'alpha');
 $action    = GETPOST('action', 'aZ09');
+$clone_id  = GETPOST('clone_id', 'int');
 
 $notifyTiers = GETPOST("notify_tiers_at_create", 'alpha');
 
@@ -638,6 +639,31 @@ if ($action == 'create' || $action == 'presend')
         $defaultref = '';
     }
 
+	if ($action == 'create' && isset($clone_id)) {
+		$object->fetch($clone_id);
+
+		$formticket->severity_code = $object->severity_code;
+		$formticket->type_code = $object->type_code;
+		$formticket->category_code = $object->category_code;
+		$formticket->withfromsocid = $object->fk_soc;
+
+		$contact = $object->getInfosTicketExternalContact();
+
+		$formticket->withfromcontactid = $contact[0]['id'];
+		$formticket->withfromcontactrole = $contact[0]['fk_c_type_contact'];
+
+		$formticket->array_options = $object->array_options;
+
+		?>
+		<script type="text/javascript" language="javascript">
+			jQuery(document).ready(function () {
+				$("#subject").val(<?=json_encode($object->subject)?>);
+				$("#message").val(<?=json_encode($object->message) ?>);
+			});
+		</script>
+		<?php
+	}
+
     $formticket->showForm(1);
 }
 
@@ -1182,6 +1208,10 @@ if (empty($action) || $action == 'view' || $action == 'addlink' || $action == 'd
 		        if ($object->fk_statut > 0 && $object->fk_statut < Ticket::STATUS_CLOSED && $user->rights->ticket->write) {
 		            print '<div class="inline-block divButAction"><a class="butAction" href="card.php?track_id=' . $object->track_id . '&action=close">' . $langs->trans('CloseTicket') . '</a></div>';
 		        }
+
+				if ($user->rights->ticket->write && ! $user->societe_id) {
+					print '<div class="inline-block divButAction"><a class="butAction" href="card.php?clone_id=' . $object->id . '&action=create&projectid='. $object->fk_project .'">' . $langs->trans('Cloner') . '</a></div>';
+				}
 
 		        // Re-open ticket
 		        if (!$user->socid && $object->fk_statut == Ticket::STATUS_CLOSED && !$user->societe_id) {

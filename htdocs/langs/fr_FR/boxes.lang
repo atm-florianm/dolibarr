@@ -85,3 +85,7 @@ LastXMonthRolling=Les %s derniers mois tournant
 ChooseBoxToAdd=Ajouter le widget au tableau de bord
 BoxAdded=Le widget a été ajouté dans votre tableau de bord
 BoxTitleUserBirthdaysOfMonth=Anniversaires de ce mois
+
+#Cell&Co
+AlertePeremption3mois=Péremption < 3 mois
+BoxProductsAlertPeremption=Alertes péremptions
