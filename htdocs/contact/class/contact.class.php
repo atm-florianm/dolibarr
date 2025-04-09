@@ -2289,4 +2289,17 @@ class Contact extends CommonObject
 		$return .= '</div>';
 		return $return;
 	}
+
+	public function generateDocument($model, $outputlangs, $hidedetails, $hidedesc, $hideref, $moreparams = null) {
+		$model ??= 'contact_tcpdi';
+		return $this->commonGenerateDocument(
+			'contact/doc/',
+			$model,
+			$outputlangs,
+			$hidedetails,
+			$hidedesc,
+			$hideref,
+			$moreparams
+		);
+	}
 }

@@ -1,0 +1,23 @@
+# Contact Card translations
+ModuleContactCardName = Contact Card
+ModuleContactCardDesc = Generate contact cards in PDF format
+
+contactcard_metadata_title = Contact %s
+contactcard_file_suffix = _cardpdf
+contactcard_title = Contact:
+
+# Template translations
+ContactInformation = Contact Information
+CompanyInformation = Company Information
+Name = Name
+PostOrFunction = Position
+Email = Email
+Phone = Phone
+PhoneMobile = Mobile
+Address = Address
+Zip = ZIP
+Company = Company
+Notes = Notes
+
+# Description shown in Dolibarr setup
+contactcard_description = Generate professional contact cards in PDF format

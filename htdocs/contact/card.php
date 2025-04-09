@@ -563,6 +563,7 @@ if (empty($reshook)) {
 	$paramname = 'id';
 	$mode = 'emailfromcontact';
 	include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
+	include DOL_DOCUMENT_ROOT.'/core/actions_builddoc.inc.php';
 }
 
 
@@ -1571,6 +1572,8 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 			if ($object->statut == 1 && $user->hasRight('societe', 'contact', 'creer')) {
 				print '<a class="butActionDelete" href="'.$_SERVER['PHP_SELF'].'?action=disable&id='.$object->id.'&token='.newToken().'">'.$langs->trans("DisableUser").'</a>';
 			}
+
+			print '<a class="butAction" href="'.$_SERVER['PHP_SELF'].'?action=builddoc&id='.$object->id.'&token='.newToken().'">'.$langs->trans("Generate").'</a>';
 
 			// Delete
 			if ($user->hasRight('societe', 'contact', 'supprimer')) {
