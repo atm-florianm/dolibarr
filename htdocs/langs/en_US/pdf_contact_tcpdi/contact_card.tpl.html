@@ -1,32 +1,48 @@
 <div class="contact-card">
-    <div class="section-title">${ContactInformation}</div>
-    <div class="contact-info">
-        <div>
-            ${Name}:
-            <span class="value">${civility} ${firstname} ${lastname}</span>
-        </div>
-        <div>${PostOrFunction}: <span class="value">${poste}</span></div>
-        <div>${Email}: <span class="value">${email}</span></div>
-        <div>${Phone}: <span class="value">${phone}</span></div>
-        <div>${PhoneMobile}: <span class="value">${phone_mobile}</span></div>
-        <div>${Address}: <span class="value">${address}</span></div>
-        <div>${Zip}: <span class="value">${zip} ${town}</span></div>
+    <div class="section-title">
+        ${ContactInformation}
     </div>
+    <section class="contact-info">
+        <div>
+            Nom : ${civility} ${firstname} ${lastname}
+        </div><span></span>
 
-    
+        <div class="${[hideEmpty v='poste']}">
+            Poste : ${poste}
+        </div><span></span>
+
+
+        <div class="${[hideEmpty v='email']}">
+            E-mail : ${email}
+        </div><span></span>
+
+
+        <div class="${[hideEmpty v='phone']}">
+            Téléphone : ${phone}
+        </div><span></span>
+
+
+        <div class="${[hideEmpty v='phone_mobile']}">
+            Mobile : ${phone_mobile}
+        </div><span></span>
+
+        
+        <div class="${[hideEmpty v='address']}">
+            Adresse : ${address} - ${zip} ${town}
+        </div><span></span>
+    </section>
+
     <div class="company-info">
         <div class="section-title">${CompanyInformation}</div>
         <div>
-            ${Company}: 
+            ${Company}:
             <span class="value">${socname}</span>
         </div>
     </div>
-    
 
-    
     <div class="notes">
         <div class="section-title">${Notes}</div>
         <div>${note_public}</div>
     </div>
-    
-</div> 
+
+</div>

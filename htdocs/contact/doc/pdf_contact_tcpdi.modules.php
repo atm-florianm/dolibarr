@@ -32,6 +32,14 @@ class pdf_contact_tcpdi extends DolibarrPdfTcpdi
      */
     public $tPrefix = 'contactcard_';
 
+    public $marginsForPage2 = [
+        'top' => 25,
+        'right' => 10,
+        'bottom' => 12,
+        'left' => 10,
+        'body-footer' => 8
+    ];
+
     /**
      * Constructor
      *
@@ -45,13 +53,6 @@ class pdf_contact_tcpdi extends DolibarrPdfTcpdi
         $this->SetCreator('Dolibarr ' . DOL_VERSION);
         $this->SetAuthor('Dolibarr');
         $this->SetTitle('Contact Card');
-
-        // Set default font
-        $this->SetFont('helvetica', '', 10);
-
-        // Set margins
-        $this->SetMargins(15, 15, 15);
-        $this->SetAutoPageBreak(true, 15);
     }
 
     /**
@@ -80,6 +81,10 @@ class pdf_contact_tcpdi extends DolibarrPdfTcpdi
             //       (setEventMessage if the document was generated from the web interface)
             return;
         }
+
+        // Set default font
+        $this->SetFont('helvetica', '', 10);
+        $this->setMarginsArray();
 
         // Add a new page
         $this->AddPage();
@@ -122,4 +127,14 @@ class pdf_contact_tcpdi extends DolibarrPdfTcpdi
         global $conf;
         return  $conf->societe->multidir_output[$this->object->entity].'/contact/'.dol_sanitizeFileName($this->object->ref);
     }
-} 
+
+    public function initSubstitutionData(): array
+    {
+        parent::initSubstitutionData();
+        $specificSub = [
+            'socname' => $this->object->thirdparty->name,
+        ];
+        $this->TSub = $specificSub + $this->TSub;
+        return $this->TSub;
+    }
+}

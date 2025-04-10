@@ -200,6 +200,14 @@ abstract class DolibarrPdfTcpdi extends TCPDI
 			return $cond ? $textIfYes : $textIfNo;
 		});
 
+		$this->shortcode->addShortCode('hideEmpty', function ($context, $params) {
+			$cond = empty($this->TSub[$params['v']??'']);
+			// si le contenu du paramètre 'yes' ou 'no' est présent comme clé du tableau de substitutions, on prend
+			// cette valeur; sinon, s'il existe une traduction ($langs), on prend cette traduction, sinon on prend
+			// la valeur brute.
+			return $cond ? 'HIDDEN' : '';
+		});
+
 		/**
 		 * Définition du short code permettant d'alterner des classes "odd" et "even" dans les templates
 		 * (parce que TCPDF ne gère pas le CSS3).
@@ -889,11 +897,10 @@ abstract class DolibarrPdfTcpdi extends TCPDI
 	 *
 	 * Cette fonction doit être surchargée par les classes filles.
 	 *
-	 * @param array $additionalObjects Objets supplémentaires passés par le hook (évite de re-fetcher tout)
 	 * @return array
 	 * @ throws Exception
 	 */
-	public function initSubstitutionData(array $additionalObjects = []): array
+	public function initSubstitutionData(): array
 	{
 		global $conf, $dolibarr_main_prod;
 
